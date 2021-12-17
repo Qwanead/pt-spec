@@ -51,6 +51,15 @@ export default {
     };
   },
 
+  created() {
+    api.get({}).then((response) => {
+      this.users = response;
+      this.users.forEach((_, i) => {
+        this.users[i].isModeView = true;
+      });
+    });
+  },
+
   methods: {
     findUser(uuid) {
       return this.users.find((user) => user.uuid === uuid);

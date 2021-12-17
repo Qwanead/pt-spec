@@ -1,6 +1,7 @@
 const URL = 'http://localhost:3123/';
 
 const Method = {
+  GET: 'GET',
   POST: 'POST',
   PUT: 'PUT',
   DELETE: 'DELETE',
@@ -20,23 +21,34 @@ const checkStatus = (response) => {
   throw new Error(`${response.status}: ${response.statusText}`);
 };
 
-const load = ({ firstName, secondName }, method, url) => fetch(
-  url, {
+const load = ({ firstName = '', secondName = '' }, method, url) => {
+  const optionList = {
     method,
-    body: JSON.stringify({
+  };
+
+  if (method !== Method.GET) {
+    optionList.body = JSON.stringify({
       firstName,
       secondName,
-    }),
-    headers: new Headers({ 'Content-Type': 'application/json' }),
-  },
-).then(checkStatus)
-  .catch((err) => {
-    throw err;
-  })
-  .then((response) => (
-    method !== Method.DELETE ? response.json() : ''));
+    });
+    optionList.headers = new Headers({ 'Content-Type': 'application/json' });
+  }
+
+  return fetch(
+    url, optionList,
+  ).then(checkStatus)
+    .catch((err) => {
+      throw err;
+    })
+    .then((response) => (
+      method !== Method.DELETE ? response.json() : ''));
+};
 
 const api = {
+  get(user) {
+    return load(user, Method.GET, URL);
+  },
+
   post(user) {
     return load(user, Method.POST, URL);
   },
