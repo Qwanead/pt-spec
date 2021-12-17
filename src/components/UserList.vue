@@ -12,14 +12,14 @@
     <td>
       <input
         v-model="user.firstName"
-        v-bind:disabled="user.isModeView"
+        v-bind:readonly="user.isModeView"
         v-on:keyup.enter="editUser(user)"
       >
     </td>
     <td>
       <input
         v-model="user.secondName"
-        v-bind:disabled="user.isModeView"
+        v-bind:readonly="user.isModeView"
         v-on:keyup.enter="editUser(user)"
       >
     </td>
@@ -80,12 +80,12 @@ export default {
     editUser(user) {
       const targetUser = this.findUser(user.uuid);
       if (targetUser.isModeView) {
+        targetUser.isModeView = !targetUser.isModeView;
+      } else {
         api.put(user).then((response) => {
           this.updateUser(response);
           targetUser.isModeView = !targetUser.isModeView;
         });
-      } else {
-        targetUser.isModeView = !targetUser.isModeView;
       }
     },
 
